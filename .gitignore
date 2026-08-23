@@ -1,0 +1,15 @@
+# 사진 원본 — 웹용으로 변환해서 assets/, gallery/ 에 넣으므로 저장소에는 올리지 않음
+Invitaion_photo/
+
+# macOS
+.DS_Store
+._*
+
+# 편집기
+.vscode/
+.idea/
+*.swp
+
+# 임시 파일
+무제 폴더/
+*.tmp
