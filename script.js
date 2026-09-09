@@ -101,6 +101,120 @@ function initParallax() {
   window.addEventListener("resize", onScroll);
 }
 
+// ====== 섹션 단위 스와이프 전환 ======
+// 지정한 섹션 구간에서는 스크롤/스와이프 한 번에 다음(이전) 섹션 맨 위까지
+// 부드럽게 자동으로 완주시킨다. 이 구간을 벗어나면 평소처럼 자연 스크롤.
+// (네이티브 CSS scroll-snap-type:mandatory 는 Chrome/Edge 에서 마우스 휠과
+// 결합 시 스냅이 불안정한 known issue 가 있어 이 구간만 JS 로 직접 제어한다.)
+function initSectionPaging(sectionIds) {
+  const sections = sectionIds
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  if (sections.length < 2) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) return;
+
+  const DURATION = 420;
+  const LOCK_GAP = 80; // 착지 직후 추가 입력 무시 시간
+  const WHEEL_THRESHOLD = 4;
+  const TOUCH_THRESHOLD = 28;
+
+  let isAnimating = false;
+  let lockedUntil = 0;
+  let touchStartY = 0;
+  let touchActive = false;
+
+  // 시작은 즉시 치고 나가고, 도착 지점에서만 부드럽게 감속
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  const zoneTop = () => sections[0].offsetTop;
+  const zoneBottom = () => {
+    const last = sections[sections.length - 1];
+    return last.offsetTop + last.offsetHeight;
+  };
+  const inZone = () => window.scrollY >= zoneTop() - 1 && window.scrollY < zoneBottom() - 1;
+
+  const currentIndex = () => {
+    const y = window.scrollY;
+    let idx = 0;
+    sections.forEach((el, i) => {
+      if (y >= el.offsetTop - Math.min(80, el.offsetHeight * 0.4)) idx = i;
+    });
+    return idx;
+  };
+
+  function animateScrollTo(targetY) {
+    isAnimating = true;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    function step(now) {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / DURATION);
+      window.scrollTo(0, startY + distance * easeOutCubic(t));
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        isAnimating = false;
+        lockedUntil = performance.now() + LOCK_GAP;
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function goToStep(direction) {
+    if (isAnimating || performance.now() < lockedUntil) return;
+    const idx = currentIndex();
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= sections.length) return;
+    animateScrollTo(sections[targetIdx].offsetTop);
+  }
+
+  window.addEventListener(
+    "wheel",
+    (e) => {
+      if (!inZone() && !isAnimating) return;
+      if (Math.abs(e.deltaY) < WHEEL_THRESHOLD) return;
+      e.preventDefault();
+      goToStep(e.deltaY > 0 ? 1 : -1);
+    },
+    { passive: false }
+  );
+
+  window.addEventListener(
+    "touchstart",
+    (e) => {
+      if (!inZone()) { touchActive = false; return; }
+      touchActive = true;
+      touchStartY = e.touches[0].clientY;
+    },
+    { passive: true }
+  );
+
+  window.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!touchActive) return;
+      e.preventDefault();
+    },
+    { passive: false }
+  );
+
+  window.addEventListener(
+    "touchend",
+    (e) => {
+      if (!touchActive) return;
+      touchActive = false;
+      const deltaY = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(deltaY) < TOUCH_THRESHOLD) return;
+      goToStep(deltaY > 0 ? 1 : -1);
+    },
+    { passive: true }
+  );
+}
+
 // ====== 네이버 핀 클릭 바운스 ======
 function initPinBounce() {
   const trigger = document.getElementById("map-pin");
@@ -574,6 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initScrollProgress();
   initReveal();
   initParallax();
+  initSectionPaging(["hero", "greeting", "when"]);
   initPinBounce();
 
   renderGallery();
