@@ -1610,8 +1610,9 @@ body.no-scroll { overflow: hidden; }
   html { scroll-snap-type: none; }
 }
 
-/* 가로형 / 짧은 화면 */
-@media (max-height: 600px), (orientation: landscape) {
+/* 가로형이면서 키가 작은 화면(모바일 가로모드) — 데스크톱처럼 세로가 짧지 않은
+   가로 화면까지 잡히지 않도록 두 조건을 AND로 묶는다 */
+@media (max-height: 600px) and (orientation: landscape) {
   html { scroll-snap-type: none; }
   .hero, .countdown, .closing,
   #shuttle, #account, #flowers, #notice,
