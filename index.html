@@ -101,7 +101,8 @@
       /* ===== HERO — index.html 맨 위 사진 + Where / Love / Grows 오버레이 (styles.css 그대로) ===== */
       .hero { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 0; overflow: hidden; }
       .hero__center { position: relative; padding: 0; margin: 0; text-align: center; }
-      .hero__photo { position: relative; z-index: 1; display: block; width: 100%; margin: 0; overflow: hidden; aspect-ratio: 9 / 16; will-change: transform; background: #1a1a1a; }
+      .hero__photo { position: relative; z-index: 1; display: block; width: 100%; margin: 0; overflow: hidden; aspect-ratio: 9 / 16; max-height: 100vh; max-height: 100dvh; will-change: transform; background: #1a1a1a; }
+      /* max-height: 화면보다 길어지면 섹션 스크롤이 히어로 안에서 한 번 더 멈추므로 화면 높이로 제한 (사진은 cover 로 잘림) */
       .hero__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
       @supports not (aspect-ratio: 9/16) {
         .hero__photo { padding-bottom: 177.78%; height: 0; aspect-ratio: auto; }
@@ -113,10 +114,11 @@
       .hero__title--overlay .hero__title-the,
       .hero__title--overlay .hero__title-of { text-shadow: 0 1px 10px rgba(0,0,0,0.2); }
       .hero__title-the,
-      .hero__title-of { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; font-size: clamp(48px, 15vw, 64px); color: var(--ink); letter-spacing: 0.04em; line-height: 1; white-space: nowrap; }
-      .hero__title-the { padding-left: 22%; text-align: left; transform: translateY(10px); }
-      .hero__title-of { padding-right: 22%; text-align: right; transform: translateY(-8px); }
-      .hero__title-main { margin: -4px 0 -2px; font-family: "Italiana", serif; font-size: clamp(78px, 23vw, 110px); line-height: 0.88; letter-spacing: -0.015em; color: var(--ink); font-weight: 500; white-space: nowrap; }
+      .hero__title-of { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; font-size: clamp(40px, 12vw, 50px); color: var(--ink); letter-spacing: 0.04em; line-height: 1; white-space: nowrap; }
+      /* Where → Love → Grows 가 왼쪽 위에서 오른쪽 아래로 계단처럼 이어지게 — 셋 다 왼쪽 정렬, 들여쓰기만 점점 크게 */
+      .hero__title-the { padding-left: 17%; text-align: left; transform: translateY(8px); }
+      .hero__title-of { padding-left: 54%; text-align: left; transform: translateY(-6px); }
+      .hero__title-main { margin: -4px 0 -2px; padding-left: 32%; text-align: left; font-family: "Italiana", serif; font-size: clamp(64px, 19vw, 86px); line-height: 0.88; letter-spacing: -0.015em; color: var(--ink); font-weight: 500; white-space: nowrap; }
       @keyframes hero-love {
         0%   { opacity: 0; transform: scale(0.94); letter-spacing: -0.04em; }
         100% { opacity: 1; transform: scale(1);    letter-spacing: -0.015em; }
@@ -130,8 +132,9 @@
       .hero-anim-fade-d2 { animation: hero-fade 1.2s ease-out 0.9s both; }
       @media (max-width: 380px) {
         .hero { padding-left: 18px; padding-right: 18px; }
-        .hero__title-the { padding-left: 10%; }
-        .hero__title-of  { padding-right: 10%; }
+        .hero__title-the  { padding-left: 13%; }
+        .hero__title-main { padding-left: 26%; }
+        .hero__title-of   { padding-left: 46%; }
       }
       @media (prefers-reduced-motion: reduce) {
         .gsap-rotate { animation: none; }
@@ -141,7 +144,7 @@
   </head>
   <body>
     <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
-    <div class="md:py-12">
+    <div class="md:pb-12">
       <main class="flex flex-col justify-center h-full max-w-md mx-auto md:rounded-b-3xl shadow-xl lg:w-[400px] relative bg-white font-suit overflow-hidden">
         <!-- 0. HERO — index.html 맨 위 사진 그대로 -->
         <section class="hero" id="hero" aria-label="결혼식 초대">
@@ -177,8 +180,9 @@
         -->
 
         <!-- 2. 초대글 -->
-        <section class="gsap-div w-full min-h-80 pt-14 pb-24 bg-white break-keep text-center" style="color:#555">
-          <div class="w-full flex justify-center mb-10">
+        <!-- 아래 여백: 화면 높이에 맞춰 16~56px — 양가 혼주 섹션까지 한 화면(한 스크롤) 안에 들어오는 만큼만 벌어짐 -->
+        <section class="gsap-div w-full pt-12 bg-white break-keep text-center" style="color:#555;padding-bottom:clamp(16px, calc(16px + (100dvh - 690px) / 2), 56px)">
+          <div class="w-full flex justify-center mb-8">
             <!-- 원본 로티(tog_invite_1) 마지막 프레임을 SVG 로 옮김 — 좌우 대칭 나뭇가지. 선이 그려지는 애니메이션은 animate() 참고 -->
             <svg class="invite-ornament" viewBox="0 0 160 52" width="160" height="52" fill="none" stroke="var(--accent)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <g transform="matrix(0.7 0 0 0.7 19.5 7.8)">
@@ -199,10 +203,9 @@
               </g>
             </svg>
           </div>
-          <div class="leading-[1.8rem] px-11 space-y-4">
-            <p class="gsap-text">사람이 온다는 건 실은 어마어마한 일이다.<br />그는 그의 과거와 현재와 그리고<br />그의 미래와 함께 오기 때문이다.<br />한 사람의 일생이 오기 때문이다.</p>
-            <p class="gsap-text text-sm opacity-70">- 정현종, '방문객'</p>
-            <p class="gsap-text pt-6">저희 두 사람이 함께하는 새로운 시작에<br />귀한 발걸음으로 축복해 주시면 감사하겠습니다.</p>
+          <div class="leading-[1.8rem] px-11 space-y-6">
+            <p class="gsap-text">매일의 작은 소란을 유쾌히 함께할 수 있는<br />평생의 짝꿍을 만났습니다.</p>
+            <p class="gsap-text">저희 두 사람이 하나 되는 날,<br />곁에서 지켜봐 주신 소중한 분들을 초대합니다.</p>
           </div>
           <!-- 잠시 주석처리
           <div class="pt-10 gsap-text w-full"><div class="img-ph w-full aspect-[2/3]"></div></div>
@@ -224,8 +227,9 @@
         -->
 
         <!-- 5. 양가 혼주 (원본 마크업 기준) -->
-        <section style="color:var(--ink);background-color:var(--bg-warm)">
-          <div class="gsap-div flex flex-col justify-center h-full min-h-96 py-20 px-4" style="opacity:.9">
+        <!-- data-page-with-prev: 섹션 스크롤에서 앞 섹션(초대글)과 한 화면으로 묶음 -->
+        <section data-page-with-prev style="color:var(--ink);background-color:var(--bg-warm)">
+          <div class="gsap-div flex flex-col justify-center h-full pt-8 pb-12 px-4" style="opacity:.9">
           <div class="gsap-opacity">
             <div class="flex flex-col w-full px-8 gap-y-8">
               <div class="flex justify-center w-full gap-2">
@@ -235,9 +239,9 @@
                 <div><span class="opacity-70">의</span></div>
                 <div><span>아들</span></div>
               </div>
-              <div class="flex justify-center gap-2 w-full">
+              <div class="flex justify-center gap-4 w-full">
                 <span class="opacity-70">신랑</span>
-                <div class="font-medium tracking-widest"><span>열호</span><span class="text-[0.6rem] align-text-top">YEOLHO</span></div>
+                <div class="font-medium tracking-widest"><span>성열호</span></div>
               </div>
             </div>
           </div>
@@ -253,9 +257,9 @@
                 <div><span class="opacity-70">의</span></div>
                 <div><span>딸</span></div>
               </div>
-              <div class="flex justify-center gap-2 w-full">
+              <div class="flex justify-center gap-4 w-full">
                 <span class="opacity-70">신부</span>
-                <div class="font-medium tracking-widest"><span>은선</span><span class="text-[0.6rem] align-text-top">EUNSEON</span></div>
+                <div class="font-medium tracking-widest"><span>장은선</span></div>
               </div>
             </div>
           </div>
@@ -860,14 +864,21 @@
         function stops() {
           const vh = innerHeight;
           const max = maxScroll();
-          const list = [];
-          sections.forEach((sec, i) => {
+          // 한 화면 단위 묶기 — data-page-with-prev 섹션은 앞 섹션과 같은 단위
+          const units = [];
+          sections.forEach((sec) => {
             const top = sec.getBoundingClientRect().top + scrollY;
-            const h = sec.offsetHeight;
-            // 첫 섹션은 페이지 맨 위(0)를 정거장으로 — 데스크톱의 카드 위 여백(md:py-12)이 사라지지 않게
-            list.push(i === 0 ? 0 : top);
-            if (h > vh + EPS) {
-              const end = top + h - vh; // 섹션 끝이 화면 아래에 닿는 위치
+            const bottom = top + sec.offsetHeight;
+            const last = units[units.length - 1];
+            if (last && sec.hasAttribute("data-page-with-prev")) last.bottom = bottom;
+            else units.push({ top, bottom });
+          });
+          const list = [0];
+          units.forEach(({ top, bottom }) => {
+            list.push(top);
+            // 화면보다 조금(15% 이내) 긴 정도면 안에서 또 멈추지 않음 — 수십 px 이동에 스크롤 한 번을 쓰지 않게
+            if (bottom - top > vh * 1.15) {
+              const end = bottom - vh; // 단위 끝이 화면 아래에 닿는 위치
               for (let y = top + vh * 0.85; y < end - EPS; y += vh * 0.85) list.push(y);
               list.push(end);
             }
