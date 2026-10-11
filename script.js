@@ -106,10 +106,9 @@ function initParallax() {
 // 자동으로 완주시킨다. 이 구간을 벗어나면 평소처럼 자연 스크롤.
 // (네이티브 CSS scroll-snap-type:mandatory 는 Chrome/Edge 에서 마우스 휠과
 // 결합 시 스냅이 불안정한 known issue 가 있어 이 구간만 JS 로 직접 제어한다.
-// 애니메이션 자체는 커스텀 rAF 루프 대신 네이티브 scrollTo(smooth) 한 번만
-// 호출한다 — html 에 scroll-behavior:smooth 가 걸려있어서, 매 프레임 수동
-// scrollTo 를 부르면 브라우저가 프레임마다 또 자체 smooth 보간을 얹어
-// 이중으로 감속되며 밀리는 느낌이 났다.)
+// 속도를 고정하려고 rAF 루프로 직접 보간한다. html 에 scroll-behavior:smooth
+// 가 걸려있어서 매 프레임 scrollTo 에 behavior:"instant" 를 명시해야 브라우저가
+// 프레임마다 자체 smooth 보간을 또 얹지 않는다 (이중 감속 방지).)
 function initSectionPaging(sectionIds) {
   const sections = sectionIds
     .map((id) => document.getElementById(id))
@@ -119,8 +118,8 @@ function initSectionPaging(sectionIds) {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduceMotion) return;
 
+  const DURATION = 600; // 섹션 한 칸 이동 시간(ms) — 브라우저와 무관하게 고정
   const LOCK_GAP = 80; // 착지 직후 추가 입력 무시 시간
-  const SETTLE_FALLBACK = 900; // scrollend 미지원/미발생 대비 안전장치
   const WHEEL_THRESHOLD = 4;
   const TOUCH_THRESHOLD = 28;
 
@@ -128,7 +127,10 @@ function initSectionPaging(sectionIds) {
   let lockedUntil = 0;
   let touchStartY = 0;
   let touchActive = false;
-  let settleTimer = 0;
+
+  // 부드럽게 출발하고 도착 지점에서 부드럽게 감속
+  const easeInOutCubic = (t) =>
+    t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   const zoneTop = () => sections[0].offsetTop;
   const zoneBottom = () => {
@@ -146,23 +148,38 @@ function initSectionPaging(sectionIds) {
     return idx;
   };
 
-  function land() {
-    isAnimating = false;
-    lockedUntil = performance.now() + LOCK_GAP;
-  }
-
-  window.addEventListener("scrollend", () => { if (isAnimating) land(); });
-
   function animateScrollTo(targetY) {
     isAnimating = true;
-    clearTimeout(settleTimer);
-    settleTimer = setTimeout(land, SETTLE_FALLBACK);
-    window.scrollTo({ top: targetY, left: 0, behavior: "smooth" });
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    function step(now) {
+      const t = Math.min(1, (now - startTime) / DURATION);
+      window.scrollTo({ top: startY + distance * easeInOutCubic(t), left: 0, behavior: "instant" });
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        isAnimating = false;
+        lockedUntil = performance.now() + LOCK_GAP;
+      }
+    }
+    requestAnimationFrame(step);
   }
+
+  // 마지막 섹션에서 아래로 가면 구간을 빠져나가는 것이므로 막지 않고
+  // 브라우저 자연 스크롤에 맡긴다 (막으면 그 자리에 갇힌다).
+  const leavesZone = (direction) =>
+    !isAnimating && direction > 0 && currentIndex() === sections.length - 1;
 
   function goToStep(direction) {
     if (isAnimating || performance.now() < lockedUntil) return;
     const idx = currentIndex();
+    // 아래 구간에서 거슬러 올라와 섹션 중간에 있으면 먼저 그 섹션 맨 위로
+    if (direction < 0 && window.scrollY > sections[idx].offsetTop + 1) {
+      animateScrollTo(sections[idx].offsetTop);
+      return;
+    }
     const targetIdx = idx + direction;
     if (targetIdx < 0 || targetIdx >= sections.length) return;
     animateScrollTo(sections[targetIdx].offsetTop);
@@ -173,8 +190,10 @@ function initSectionPaging(sectionIds) {
     (e) => {
       if (!inZone() && !isAnimating) return;
       if (Math.abs(e.deltaY) < WHEEL_THRESHOLD) return;
+      const direction = e.deltaY > 0 ? 1 : -1;
+      if (leavesZone(direction)) return;
       e.preventDefault();
-      goToStep(e.deltaY > 0 ? 1 : -1);
+      goToStep(direction);
     },
     { passive: false }
   );
@@ -193,6 +212,8 @@ function initSectionPaging(sectionIds) {
     "touchmove",
     (e) => {
       if (!touchActive) return;
+      const deltaY = touchStartY - e.touches[0].clientY;
+      if (leavesZone(deltaY > 0 ? 1 : -1)) { touchActive = false; return; }
       e.preventDefault();
     },
     { passive: false }
