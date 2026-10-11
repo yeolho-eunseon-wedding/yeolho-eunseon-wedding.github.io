@@ -8,7 +8,7 @@ const EVENT_TITLE = "열호와 은선이의 결혼식";
 const EVENT_ADDRESS = "서울시 용산구 이태원로 29 로얄파크컨벤션";
 
 // 카카오톡 공유 (JavaScript SDK) — JS 키는 웹 공개용이라 노출돼도 안전 (등록 도메인에서만 동작)
-const KAKAO_JS_KEY = "de5a77b6b6ea47937cf901c1658a8979";
+const KAKAO_JS_KEY = "a1b45026027b886becadd77995ada33a";
 const SITE_URL = "https://yeolho-eunseon-wedding.github.io";
 // 카카오는 이미지를 URL 단위로 캐시한다. 사진을 교체했는데 옛 썸네일이 계속 뜨면
 // 아래 IMG_VER 숫자를 올려서 새 URL로 만들면 캐시가 갱신된다. (index.html og:image 도 같이)
