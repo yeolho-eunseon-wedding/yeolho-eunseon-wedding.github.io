@@ -180,8 +180,8 @@
         -->
 
         <!-- 2. 초대글 -->
-        <!-- 아래 여백: 화면 높이에 맞춰 16~56px — 양가 혼주 섹션까지 한 화면(한 스크롤) 안에 들어오는 만큼만 벌어짐 -->
-        <section class="gsap-div w-full pt-12 bg-white break-keep text-center" style="color:#555;padding-bottom:clamp(16px, calc(16px + (100dvh - 690px) / 2), 56px)">
+        <!-- 아래 여백: 화면 높이에 맞춰 32~72px (위 여백을 줄인 16px 만큼 아래로 옮겨 섹션 높이는 그대로) — 양가 혼주 섹션까지 한 화면(한 스크롤) 안에 들어오는 만큼만 벌어짐 -->
+        <section class="gsap-div w-full pt-8 bg-white break-keep text-center" style="color:#555;padding-bottom:clamp(32px, calc(32px + (100dvh - 690px) / 2), 72px)">
           <div class="w-full flex justify-center mb-8">
             <!-- 원본 로티(tog_invite_1) 마지막 프레임을 SVG 로 옮김 — 좌우 대칭 나뭇가지. 선이 그려지는 애니메이션은 animate() 참고 -->
             <svg class="invite-ornament" viewBox="0 0 160 52" width="160" height="52" fill="none" stroke="var(--accent)" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -275,7 +275,7 @@
         </section>
 
         <!-- 4. WEDDING DAY — 달력 + 카운트다운 -->
-        <section class="gsap-div flex flex-col items-center justify-center py-20 min-h-96 px-4" style="background-color:#F8F8F8">
+        <section class="gsap-div flex flex-col items-center justify-center pt-14 pb-[104px] min-h-96 px-4" style="background-color:#F8F8F8">
           <div class="mb-12 gsap-opacity flex justify-center">
             <p class="tracking-wider px-4 text-4xl font-sometimestimes title">WEDDING DAY</p>
           </div>
@@ -604,8 +604,8 @@
       ];
 
       const CONTACTS = [
-        { role: "신랑", name: "성열호", tel: "010-0000-0000" },
-        { role: "신부", name: "장은선", tel: "010-0000-0000" },
+        { role: "신랑", name: "성열호", tel: "010-6707-9410" },
+        { role: "신부", name: "장은선", tel: "010-5670-6735" },
       ];
 
       const GUESTBOOK = [
