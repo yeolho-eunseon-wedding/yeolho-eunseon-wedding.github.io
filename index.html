@@ -321,25 +321,33 @@
           <div id="directions" class="flex flex-col text-[13.3px] w-full gap-y-3 break-keep px-8 leading-6 title"></div>
         </section>
 
-        <!-- 6. ABOUT US -->
-        <section class="gsap-div flex flex-col items-center justify-center py-20 min-h-80" style="background:var(--bg-soft)">
+        <!-- 6. ABOUT US — 신랑 카드에서 아래로 스크롤하면 신부 카드로 가로 전환 (initAboutCards) -->
+        <section class="gsap-div flex flex-col items-center justify-start pt-12 pb-10 min-h-[100dvh]" style="background:var(--bg-soft)">
           <p class="tracking-wider gsap-opacity px-10 text-center text-4xl font-sometimestimes title">ABOUT US</p>
-          <div class="my-6 text-center space-y-2 px-10">
-            <p class="gsap-opacity sub-strong">저희 커플을 소개합니다</p>
-            <p class="gsap-opacity sub-weak">하나로 이어진 두개의 우주</p>
-          </div>
-          <div class="gsap-opacity mt-4 w-3/4 flex flex-col space-y-4">
-            <div class="flex flex-col items-center bg-white rounded-xl shadow-md p-8 space-y-4 w-full text-sm">
-              <div class="img-ph w-full aspect-square rounded-xl shadow-md"></div>
-              <p><span style="color:var(--accent)">신랑</span> <span class="text-base">성열호</span></p>
-              <p class="w-full whitespace-pre-line text-center text-tog-666">1994년 10월 인천 출생
+          <div class="gsap-opacity mt-6 w-[85%] max-w-[340px]">
+            <div id="about-cards" class="overflow-hidden">
+              <div class="about-track flex">
+                <div class="w-full shrink-0 p-3">
+                  <div class="flex flex-col items-center bg-white rounded-xl shadow-md p-7 space-y-4 w-full text-sm">
+                    <div class="img-ph w-full aspect-square rounded-xl shadow-md"></div>
+                    <p><span style="color:var(--accent)">신랑</span> <span class="text-base">성열호</span></p>
+                    <p class="w-full whitespace-pre-line text-center text-tog-666">1994년 10월 인천 출생
 호기심 많은 손재주 왕 📽</p>
-            </div>
-            <div class="flex flex-col items-center bg-white rounded-xl shadow-md p-8 space-y-4 w-full text-sm">
-              <div class="img-ph w-full aspect-square rounded-xl shadow-md"></div>
-              <p><span style="color:var(--accent)">신부</span> <span class="text-base">장은선</span></p>
-              <p class="w-full whitespace-pre-line text-center text-tog-666">1995년 8월 청주 출생
+                  </div>
+                </div>
+                <div class="w-full shrink-0 p-3">
+                  <div class="flex flex-col items-center bg-white rounded-xl shadow-md p-7 space-y-4 w-full text-sm">
+                    <div class="img-ph w-full aspect-square rounded-xl shadow-md"></div>
+                    <p><span style="color:var(--accent)">신부</span> <span class="text-base">장은선</span></p>
+                    <p class="w-full whitespace-pre-line text-center text-tog-666">1995년 8월 청주 출생
 감성 과다 제주소녀 🍊</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="about-dots flex justify-center gap-2 pt-3">
+              <button class="w-1.5 h-1.5 rounded-full transition-colors" aria-label="신랑 소개"></button>
+              <button class="w-1.5 h-1.5 rounded-full transition-colors" aria-label="신부 소개"></button>
             </div>
           </div>
         </section>
@@ -897,6 +905,52 @@
         });
       }
 
+      // 섹션 안에서 먼저 소비되는 가로 넘김 — 섹션 스크롤(go)이 이동 전에 차례로 물어봄. true 를 돌려주면 세로 이동 안 함
+      const innerPagers = [];
+
+      // ABOUT US 카드 — 섹션이 화면에 자리 잡은 상태에서 아래로 넘기면 신랑 → 신부 카드로 가로 전환, 위로 넘기면 되돌림
+      function initAboutCards() {
+        const box = $("#about-cards");
+        if (!box) return;
+        const sec = box.closest("section");
+        const track = $(".about-track", box);
+        const dots = $$(".about-dots button");
+        const count = track.children.length;
+        const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        let index = 0, busy = false;
+
+        const show = (i) => {
+          index = i;
+          busy = true;
+          gsap.to(track, { xPercent: -100 * i, duration: reduce ? 0 : 0.6, ease: "power3.inOut", onComplete: () => { busy = false; } });
+          dots.forEach((d, di) => { d.style.background = di === i ? "var(--accent)" : "#d4d4d4"; });
+        };
+        show(0);
+
+        dots.forEach((d, i) => { d.onclick = () => show(i); });
+
+        // 가로 스와이프로도 넘김
+        let sx = 0, sy = 0;
+        box.addEventListener("touchstart", (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        box.addEventListener("touchend", (e) => {
+          const dx = sx - e.changedTouches[0].clientX;
+          const dy = sy - e.changedTouches[0].clientY;
+          if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
+          const next = index + (dx > 0 ? 1 : -1);
+          if (next >= 0 && next < count) show(next);
+        }, { passive: true });
+
+        innerPagers.push((dir) => {
+          const r = sec.getBoundingClientRect();
+          if (Math.abs(r.top) > 4) return false; // 섹션 맨 위에 멈춰 있을 때만
+          if (busy) return true;
+          const next = index + dir;
+          if (next < 0 || next >= count) return false;
+          show(next);
+          return true;
+        });
+      }
+
       // 섹션 단위 스크롤 — 휠 한 번 / 스와이프 한 번 / 키 한 번에 다음(이전) 섹션 맨 위로 부드럽게 이동.
       // 화면보다 긴 섹션은 내용이 잘리지 않게 섹션 안에서 한 화면(85%)씩 끊어서 내려간다.
       function initSectionScroll() {
@@ -965,6 +1019,7 @@
 
         function go(dir) {
           if (animating) return;
+          if (innerPagers.some((page) => page(dir))) return;
           const y = scrollY;
           const list = stops();
           const target = dir > 0 ? list.find((s) => s > y + EPS) : [...list].reverse().find((s) => s < y - EPS);
@@ -1152,6 +1207,7 @@
       splitDate();
       bindEvents();
       initScrollProgress();
+      initAboutCards();
       initSectionScroll();
       initKakaoMap();
       initParallax();
