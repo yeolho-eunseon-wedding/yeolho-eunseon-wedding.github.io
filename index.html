@@ -263,6 +263,7 @@
               </div>
             </div>
           </div>
+          <!-- 축하 연락하기 버튼 — 잠시 주석처리
           <div class="px-5">
             <button class="mt-12 gsap-opacity w-full rounded-lg h-12 text-sm" style="background-color:var(--button)" data-open="modal-contact">
               <div class="flex items-center justify-between w-full px-4">
@@ -271,6 +272,7 @@
               </div>
             </button>
           </div>
+          -->
           </div>
         </section>
 
@@ -654,7 +656,9 @@
 
       // 캘린더 등록
       // - iOS: .ics 파일 → 캘린더 앱의 '이벤트 추가' 화면
-      // - 안드로이드: 일정 추가 인텐트 → 폰 기본 캘린더(삼성 캘린더 등). 인텐트를 못 열면 .ics 로 대체
+      // - 안드로이드: 일정 추가 인텐트 → 폰 기본 캘린더(삼성 캘린더 등).
+      //   크롬 등에서 인텐트가 막히면 .ics 다운로드 대신 구글 캘린더 일정 추가 화면으로 대체
+      //   (구글 계정이 동기화돼 있으면 삼성 캘린더에도 그대로 보임)
       // - 그 외(PC): 구글 캘린더 일정 추가 화면
       const CAL_EVENT = {
         title: "성열호 ♥ 장은선 결혼식",
@@ -662,6 +666,18 @@
         start: WEDDING,
         end: new Date(WEDDING.getTime() + 2 * 36e5),
       };
+      function googleCalendarUrl() {
+        const fmt = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, "");
+        const q = new URLSearchParams({
+          action: "TEMPLATE",
+          text: CAL_EVENT.title,
+          dates: `${fmt(CAL_EVENT.start)}/${fmt(CAL_EVENT.end)}`,
+          location: CAL_EVENT.location,
+          details: location.origin + location.pathname,
+          ctz: "Asia/Seoul",
+        });
+        return `https://calendar.google.com/calendar/render?${q}`;
+      }
       function addToCalendar() {
         const ua = navigator.userAgent;
         const isIOS = /iPad|iPhone|iPod/.test(ua)
@@ -681,20 +697,11 @@
             + `S.description=${e(location.origin + location.pathname)};`
             + `l.beginTime=${CAL_EVENT.start.getTime()};`
             + `l.endTime=${CAL_EVENT.end.getTime()};`
-            + `S.browser_fallback_url=${e(icsUrl)};`
+            + `S.browser_fallback_url=${e(googleCalendarUrl())};`
             + "end";
           return;
         }
-        const fmt = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, "");
-        const q = new URLSearchParams({
-          action: "TEMPLATE",
-          text: CAL_EVENT.title,
-          dates: `${fmt(CAL_EVENT.start)}/${fmt(CAL_EVENT.end)}`,
-          location: CAL_EVENT.location,
-          details: location.origin + location.pathname,
-          ctz: "Asia/Seoul",
-        });
-        window.open(`https://calendar.google.com/calendar/render?${q}`, "_blank");
+        window.open(googleCalendarUrl(), "_blank");
       }
 
       function renderTimeline() {
