@@ -204,8 +204,8 @@
             </svg>
           </div>
           <div class="leading-[1.8rem] px-11 space-y-6">
-            <p class="gsap-text">매일의 작은 소란을 유쾌히 함께할 수 있는<br />평생의 짝꿍을 만났습니다.</p>
-            <p class="gsap-text">저희 두 사람이 하나 되는 날,<br />곁에서 지켜봐 주신 소중한 분들을 초대합니다.</p>
+            <p class="gsap-text">"좋은 인연은 나를 들뜨게 하지 않는다.<br />성숙하게 살아야 했던 나를<br />조금 더 아이처럼 만들 뿐이다."</p>
+            <p class="gsap-text">서로의 하루에 스며들어<br />앞으로의 모든 계절을 함께하려 합니다.<br />저희의 시작을 따뜻하게 축복해 주세요.</p>
           </div>
           <!-- 잠시 주석처리
           <div class="pt-10 gsap-text w-full"><div class="img-ph w-full aspect-[2/3]"></div></div>
@@ -274,7 +274,7 @@
           </div>
         </section>
 
-        <!-- 4. WEDDING DAY — 달력 + 카운트다운 -->
+        <!-- 4. WEDDING DAY — 달력 + 캘린더 등록 -->
         <section class="gsap-div flex flex-col items-center justify-center pt-10 pb-[120px] min-h-96 px-4" style="background-color:#F8F8F8">
           <div class="mb-12 gsap-opacity flex justify-center">
             <p class="tracking-wider px-4 text-4xl font-sometimestimes title">WEDDING DAY</p>
@@ -287,19 +287,20 @@
             <div class="gsap-opacity w-full border-y border-tog-eee py-8 mb-8">
               <div id="calendar" class="grid grid-cols-7 font-normal text-center gap-y-6 text-sm"></div>
             </div>
-            <div class="flex justify-center w-full gsap-opacity gap-x-2" id="countdown">
-              <div class="flex-grow w-full py-4 bg-white rounded-lg shadow-lg text-center"><p class="text-xl" data-cd="d">0</p><p class="text-[10px] text-tog-999">DAYS</p></div>
-              <div class="flex-grow w-full py-4 bg-white rounded-lg shadow-lg text-center"><p class="text-xl" data-cd="h">0</p><p class="text-[10px] text-tog-999">HOURS</p></div>
-              <div class="flex-grow w-full py-4 bg-white rounded-lg shadow-lg text-center"><p class="text-xl" data-cd="m">0</p><p class="text-[10px] text-tog-999">MINUTES</p></div>
-              <div class="flex-grow w-full py-4 bg-white rounded-lg shadow-lg text-center"><p class="text-xl" data-cd="s">0</p><p class="text-[10px] text-tog-999">SECONDS</p></div>
+            <!-- iOS: wedding.ics 를 열면 캘린더 앱의 '이벤트 추가' 화면이 뜸 / 그 외: 구글 캘린더 일정 추가 화면 -->
+            <div class="flex justify-center w-full gsap-opacity px-3">
+              <button id="add-calendar" class="w-full h-12 flex items-center justify-center gap-2 bg-white rounded-lg shadow-md text-sm text-tog-444">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>
+                내 캘린더에 일정 추가하기
+              </button>
             </div>
           </div>
         </section>
 
         <!-- 9. LOCATION -->
-        <section class="gsap-div min-h-96 flex flex-col items-center justify-center py-16 leading-snug" style="background-color:var(--bg-warm)">
+        <section class="gsap-div min-h-96 flex flex-col items-center justify-center pt-10 pb-16 leading-snug" style="background-color:var(--bg-warm)">
           <p class="tracking-wider gsap-opacity text-4xl font-sometimestimes title">LOCATION</p>
-          <div class="flex flex-col py-10 text-center gap-y-2 px-6">
+          <div class="flex flex-col pt-8 pb-5 text-center gap-y-2 px-6">
             <p class="gsap-opacity title">로얄파크컨벤션</p>
             <button class="gsap-opacity text-sm sub-weak flex justify-center items-center gap-2" data-copy="서울시 용산구 이태원로 29" data-msg="주소가 복사되었습니다.">
               서울시 용산구 이태원로 29
@@ -341,7 +342,7 @@
           </div>
         </section>
 
-        <!-- 7. OUR TIMELINE — 가운데 세로선 + 좌우 교차 -->
+        <!-- 7. OUR TIMELINE — 가운데 세로선 + 좌우 교차 — 잠시 주석처리
         <section class="gsap-div flex flex-col items-center justify-center py-16 overflow-hidden min-h-96 bg-[#fafafa]">
           <p class="tracking-wider gsap-opacity px-10 text-4xl font-sometimestimes title">OUR TIMELINE</p>
           <div class="my-6 text-center space-y-2 px-10">
@@ -354,6 +355,7 @@
             </div>
           </div>
         </section>
+        -->
 
         <!-- 8. GALLERY -->
         <section class="gsap-div flex flex-col items-center justify-center py-20 bg-white min-h-80">
@@ -378,7 +380,7 @@
           <div class="gsap-opacity mt-4 space-y-3" id="accounts"></div>
         </section>
 
-        <!-- 11. MESSAGE (방명록) -->
+        <!-- 11. MESSAGE (방명록) / 12. INFORMATION / 13. RSVP — 잠시 주석처리
         <section class="gsap-div flex flex-col justify-center items-center min-h-96 py-20 px-10" style="background:var(--bg-soft)">
           <p class="gsap-opacity tracking-wider text-4xl font-sometimestimes title">MESSAGE</p>
           <p class="gsap-opacity py-10 text-center title">저희 둘에게 따뜻한 방명록을 남겨주세요</p>
@@ -388,7 +390,6 @@
           </div>
         </section>
 
-        <!-- 12. INFORMATION -->
         <section class="gsap-div flex flex-col items-center justify-center py-16 overflow-hidden min-h-96" style="background:var(--bg-green)">
           <p class="tracking-wider gsap-opacity px-10 text-4xl font-sometimestimes title">INFORMATION</p>
           <div class="py-10 text-center space-y-2 px-11">
@@ -406,7 +407,6 @@
           </div>
         </section>
 
-        <!-- 13. RSVP -->
         <section class="gsap-div flex flex-col items-center justify-center py-20 bg-white min-h-12 px-11">
           <p class="gsap-opacity tracking-wider px-10 text-4xl font-sometimestimes title">RSVP</p>
           <div class="py-6 text-center space-y-2">
@@ -423,6 +423,7 @@
             </div>
           </div>
         </section>
+        -->
 
         <!-- 14. RECEPTION / 15. OUR LOVE STORY — 잠시 주석처리
         <section class="gsap-div flex flex-col items-center justify-center py-16 overflow-hidden min-h-80 bg-white px-6">
@@ -454,7 +455,7 @@
         </section>
         -->
 
-        <!-- 16. OUR SPOTS -->
+        <!-- 16. OUR SPOTS / 17. 화환 — 잠시 주석처리
         <section class="gsap-div flex flex-col items-center justify-center py-20 min-h-80 px-11" style="background:var(--charcoal)">
           <div class="py-8 mt-4 gsap-opacity text-3xl font-sometimestimes" style="color:var(--accent-light)">OUR SPOTS</div>
           <div class="flex flex-col justify-center text-center gap-y-2 gsap-opacity">
@@ -464,10 +465,8 @@
           <button class="gsap-opacity mt-10 w-full h-12 rounded-lg text-sm" style="background:var(--accent-light);color:var(--charcoal)" data-toast="준비 중입니다.">지도 살펴보기</button>
         </section>
 
-        <!-- 17. 화환 -->
         <section class="gsap-div flex flex-col items-center justify-center py-20 min-h-80 gap-8" style="background:var(--accent-deep)">
           <div class="relative w-[7.5rem] h-[7.5rem] gsap-opacity">
-            <!-- 레퍼런스와 같은 회전 꽃 심볼 이미지 (흰색 투명 PNG) -->
             <div class="gsap-rotate absolute inset-0"><img src="https://hellomybrand.com/wed/images/flower.png" alt="flower-symbol" class="w-full h-full" /></div>
             <div id="dday-badge" class="absolute inset-0 flex items-center justify-center text-white text-lg font-abramoserif">D - 0</div>
           </div>
@@ -479,6 +478,7 @@
             <button class="w-full h-12 rounded-lg text-sm bg-white" style="color:var(--accent-deep)" data-toast="준비 중입니다.">축하 화환 선물하기</button>
           </div>
         </section>
+        -->
 
         <!-- 18. 마무리 인용구 -->
         <section class="gsap-div w-full" style="background:var(--bg-deep)">
@@ -575,12 +575,12 @@
       ];
 
       const DIRECTIONS = [
-        { label: "자차", items: ["내비게이션 : '서울 웨스틴조선호텔' 검색\n서울시 중구 소공로 106 서울 웨스틴조선호텔"] },
-        { label: "버스", items: [
-          "172(우리은행종로지점 방면)\n서울광장역 하차 → 데미타스커피 왼쪽 방면 → 도보 5분",
-          "405(롯데백화점 방면)\n서울광장역 하차 → 데미타스커피 왼쪽 방면 → 도보 5분",
-          "472(을지로입구 방면)\n시청역 하차 → 도보 5분",
-        ] },
+        { label: "자차", items: ["내비게이션 : '로얄파크컨벤션' 검색\n서울시 용산구 이태원로 29 로얄파크컨벤션"] },
+        // { label: "버스", items: [
+        //   "172(우리은행종로지점 방면)\n서울광장역 하차 → 데미타스커피 왼쪽 방면 → 도보 5분",
+        //   "405(롯데백화점 방면)\n서울광장역 하차 → 데미타스커피 왼쪽 방면 → 도보 5분",
+        //   "472(을지로입구 방면)\n시청역 하차 → 도보 5분",
+        // ] },
         { label: "지하철", items: [
           "1호선(시청역)\n시청역 11번 출구 → 10번 출구 도보 5분",
           "2호선 (을지로입구역)\n을지로입구역 4번 출구 → 10번 출구 도보 5분",
@@ -652,21 +652,54 @@
         $("#calendar").innerHTML = html;
       }
 
-      function tickCountdown() {
-        let diff = Math.max(0, WEDDING - Date.now());
-        const d = Math.floor(diff / 864e5); diff -= d * 864e5;
-        const h = Math.floor(diff / 36e5); diff -= h * 36e5;
-        const m = Math.floor(diff / 6e4); diff -= m * 6e4;
-        const s = Math.floor(diff / 1e3);
-        $('[data-cd="d"]').textContent = d;
-        $('[data-cd="h"]').textContent = h;
-        $('[data-cd="m"]').textContent = m;
-        $('[data-cd="s"]').textContent = s;
-        $("#dday-badge").textContent = `D - ${d}`;
+      // 캘린더 등록
+      // - iOS: .ics 파일 → 캘린더 앱의 '이벤트 추가' 화면
+      // - 안드로이드: 일정 추가 인텐트 → 폰 기본 캘린더(삼성 캘린더 등). 인텐트를 못 열면 .ics 로 대체
+      // - 그 외(PC): 구글 캘린더 일정 추가 화면
+      const CAL_EVENT = {
+        title: "성열호 ♥ 장은선 결혼식",
+        location: "로얄파크컨벤션, 서울시 용산구 이태원로 29",
+        start: WEDDING,
+        end: new Date(WEDDING.getTime() + 2 * 36e5),
+      };
+      function addToCalendar() {
+        const ua = navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/.test(ua)
+          || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+        const icsUrl = new URL("wedding.ics", location.href).href;
+        if (isIOS) {
+          location.href = icsUrl;
+          return;
+        }
+        if (/Android/i.test(ua)) {
+          const e = encodeURIComponent;
+          location.href = "intent:#Intent;"
+            + "action=android.intent.action.INSERT;"
+            + "type=vnd.android.cursor.item/event;"
+            + `S.title=${e(CAL_EVENT.title)};`
+            + `S.eventLocation=${e(CAL_EVENT.location)};`
+            + `S.description=${e(location.origin + location.pathname)};`
+            + `l.beginTime=${CAL_EVENT.start.getTime()};`
+            + `l.endTime=${CAL_EVENT.end.getTime()};`
+            + `S.browser_fallback_url=${e(icsUrl)};`
+            + "end";
+          return;
+        }
+        const fmt = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, "");
+        const q = new URLSearchParams({
+          action: "TEMPLATE",
+          text: CAL_EVENT.title,
+          dates: `${fmt(CAL_EVENT.start)}/${fmt(CAL_EVENT.end)}`,
+          location: CAL_EVENT.location,
+          details: location.origin + location.pathname,
+          ctz: "Asia/Seoul",
+        });
+        window.open(`https://calendar.google.com/calendar/render?${q}`, "_blank");
       }
 
       function renderTimeline() {
         const wrap = $("#timeline");
+        if (!wrap) return;
         TIMELINE.forEach((t, i) => {
           const text = `
             <div class="w-[42%] ${i % 2 ? "text-left" : "text-right"} space-y-1 text-sm">
@@ -753,6 +786,7 @@
           </div>`;
       }
       function renderGuestbook() {
+        if (!$("#guestbook")) return;
         $("#guestbook").innerHTML = GUESTBOOK.map(guestCard).join("");
       }
 
@@ -811,6 +845,8 @@
           renderGallery();
           ScrollTrigger.refresh();
         };
+
+        $("#add-calendar").onclick = addToCalendar;
 
         const receptionCheck = $("#reception-check");
         if (receptionCheck) receptionCheck.onclick = (e) => {
@@ -1084,7 +1120,7 @@
         }
 
         // 타임라인: 세로선이 위에서 아래로 그려지고, 항목/점이 차례로 등장
-        gsap.from(".timeline-line", {
+        if ($("#timeline")) gsap.from(".timeline-line", {
           scaleY: 0, ease: "none",
           scrollTrigger: { trigger: "#timeline", start: "top 70%", end: "bottom 70%", scrub: true },
         });
@@ -1103,8 +1139,6 @@
       renderGuestbook();
       renderGallery();
       splitDate();
-      tickCountdown();
-      setInterval(tickCountdown, 1000);
       bindEvents();
       initScrollProgress();
       initSectionScroll();
