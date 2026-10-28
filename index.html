@@ -577,7 +577,11 @@
       ];
 
       const DIRECTIONS = [
-        { label: "자차", items: ["내비게이션 : '로얄파크컨벤션' 검색\n서울시 용산구 이태원로 29 로얄파크컨벤션"] },
+        // TODO: 집결지·출발시간 확정되면 수정
+        { label: "대절버스", icon: "버스", items: [
+          "서울행 : 청주시외버스터미널 8시 30분 집결",
+          "청주행 : 로얄파크컨벤션 주차장 15시 집결",
+        ] },
         // { label: "버스", items: [
         //   "172(우리은행종로지점 방면)\n서울광장역 하차 → 데미타스커피 왼쪽 방면 → 도보 5분",
         //   "405(롯데백화점 방면)\n서울광장역 하차 → 데미타스커피 왼쪽 방면 → 도보 5분",
@@ -587,7 +591,7 @@
           "1호선(시청역)\n시청역 11번 출구 → 10번 출구 도보 5분",
           "2호선 (을지로입구역)\n을지로입구역 4번 출구 → 10번 출구 도보 5분",
         ] },
-        { label: "주차", items: ["더 플라자 호텔 주차장 : 하객 3시간 무료\n주차현장 주차 요원 안내를 받아주세요."] },
+        { label: "주차", items: ["전쟁기념관 주차장 : 하객 2시간 무료"] },
       ];
 
       const ACCOUNTS = [
@@ -739,7 +743,7 @@
       function renderDirections() {
         $("#directions").innerHTML = DIRECTIONS.map((g, gi) => `
           <div>
-            <div class="flex gsap-opacity pb-1 items-center font-semibold" style="color:var(--accent)">${directionIcon(g.label)}${g.label}</div>
+            <div class="flex gsap-opacity pb-1 items-center font-semibold" style="color:var(--accent)">${directionIcon(g.icon || g.label)}${g.label}</div>
             ${g.items.map((it) => {
               const [head, ...rest] = it.split("\n");
               return `<div class="gsap-opacity py-1.5 whitespace-pre-line"><p>${esc(head)}</p><p class="sub-weak">${esc(rest.join("\n"))}</p></div>`;
