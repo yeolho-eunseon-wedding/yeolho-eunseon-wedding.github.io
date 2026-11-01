@@ -390,8 +390,8 @@
           </div>
         </section>
 
-        <!-- 10. 마음 전하실 곳 -->
-        <section class="gsap-div flex flex-col justify-center min-h-96 py-20 px-8" style="background-color:#F8F8F8">
+        <!-- 10. 마음 전하실 곳 — 계좌가 늦게 뜨지 않게 화면에 들어오자마자 빠르게 등장 -->
+        <section data-gsap-fast class="gsap-div flex flex-col justify-center min-h-96 py-20 px-8" style="background-color:#F8F8F8">
           <div class="my-6 text-center space-y-2">
             <p class="gsap-opacity title text-lg">마음 전하실 곳</p>
             <p class="gsap-opacity sub-weak whitespace-pre-wrap text-sm">참석이 어려우신 분들을 위해 기재했습니다
@@ -1218,10 +1218,11 @@
 
         // 섹션마다: .gsap-opacity / .gsap-text 를 아래에서 위로 stagger 페이드인
         $$(".gsap-div").forEach((sec) => {
-          const st = { trigger: sec, start: "top 50%" };
+          const fast = sec.hasAttribute("data-gsap-fast");
+          const st = { trigger: sec, start: fast ? "top 85%" : "top 50%" };
           const op = $$(".gsap-opacity", sec);
           const tx = $$(".gsap-text", sec);
-          if (op.length) gsap.from(op, { scrollTrigger: st, opacity: 0, y: 40, duration: 1, stagger: 0.1 });
+          if (op.length) gsap.from(op, { scrollTrigger: st, opacity: 0, y: 40, duration: fast ? 0.5 : 1, stagger: fast ? 0.05 : 0.1 });
           if (tx.length) gsap.from(tx, { scrollTrigger: st, opacity: 0, y: 40, duration: 1, stagger: 0.05 });
         });
 
