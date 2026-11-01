@@ -93,6 +93,15 @@
       /* 모달 */
       .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); padding: 16px; }
       .modal.open { display: flex; }
+      /* 갤러리 전체 화면 — 열고 닫을 때, 사진을 넘길 때 페이드 */
+      @keyframes lb-fade-in { from { opacity: 0; } }
+      @keyframes lb-fade-out { to { opacity: 0; } }
+      #lightbox.open { animation: lb-fade-in 250ms ease-out; }
+      #lightbox.closing { animation: lb-fade-out 200ms ease-in forwards; }
+      #lb-img img { animation: lb-fade-in 250ms ease-out; }
+      @media (prefers-reduced-motion: reduce) {
+        #lightbox.open, #lightbox.closing, #lb-img img { animation: none; }
+      }
       /* 토스트 */
       #toast { position: fixed; left: 50%; bottom: 32px; transform: translate(-50%, 20px); opacity: 0; transition: all 0.3s; z-index: 60; pointer-events: none; }
       #toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -375,8 +384,8 @@
           <div class="gsap-opacity mt-4 w-full">
             <div id="gallery" class="w-full grid gap-[1.5px] grid-cols-3"></div>
             <button id="gallery-more" class="flex justify-center w-full py-9 text-sm text-tog-999 items-center gap-1">
-              더보기
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 9 6 6 6-6"/></svg>
+              <span>더보기</span>
+              <svg class="transition-transform" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 9 6 6 6-6"/></svg>
             </button>
           </div>
         </section>
@@ -491,7 +500,7 @@
         </section>
         -->
 
-        <!-- 18. 마무리 인용구 -->
+        <!-- 18. 마무리 인용구 / 19. 공유 — 잠시 주석처리
         <section class="gsap-div w-full" style="background:var(--bg-deep)">
           <div class="relative overflow-clip w-full gsap-opacity">
             <div class="img-ph w-full aspect-[2/3]"></div>
@@ -503,7 +512,6 @@
           </div>
         </section>
 
-        <!-- 19. 공유 -->
         <section class="gsap-div flex flex-col items-center justify-center bg-white gap-y-3 min-h-28 py-9 px-9">
           <button class="flex items-center justify-between text-sm w-full h-12 px-5 rounded-xl bg-[#FCE777] gsap-opacity text-[#222]" data-toast="카카오 공유는 SDK 키 설정 후 사용 가능합니다.">
             카카오톡으로 청첩장 전하기
@@ -514,6 +522,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.2"><rect x="4" y="2" width="13" height="16" rx="1.5"/><path d="M20 6v13a2 2 0 0 1-2 2H8"/></svg>
           </button>
         </section>
+        -->
         <div class="py-11 bg-white md:rounded-b-3xl"></div>
       </main>
     </div>
@@ -573,6 +582,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- 갤러리 사진 목록 — gallery/ 에 사진을 넣고 `node scripts/build-gallery-manifest.mjs` 로 갱신 -->
+    <script src="gallery-data.js"></script>
     <script>
       // ───────── 데이터 ─────────
       const WEDDING = new Date("2027-02-21T11:30:00+09:00");
@@ -605,14 +616,14 @@
 
       const ACCOUNTS = [
         { side: "신랑측에게", list: [
-          { role: "신랑", name: "최도현", bank: "OO은행", number: "000-0000-0000-00" },
-          { role: "신랑 아버지", name: "최재훈", bank: "OO은행", number: "000-0000-0000-00" },
-          { role: "신랑 어머니", name: "이연주", bank: "OO은행", number: "000-0000-0000-00" },
+          { role: "신랑", name: "성열호", bank: "신한은행", number: "110-385-586199" },
+          // { role: "신랑 아버지", name: "최재훈", bank: "OO은행", number: "000-0000-0000-00" },
+          // { role: "신랑 어머니", name: "이연주", bank: "OO은행", number: "000-0000-0000-00" },
         ] },
         { side: "신부측에게", list: [
-          { role: "신부", name: "김효진", bank: "OO은행", number: "000-0000-0000-00" },
-          { role: "신부 아버지", name: "김윤성", bank: "OO은행", number: "000-0000-0000-00" },
-          { role: "신부 어머니", name: "조하영", bank: "OO은행", number: "000-0000-0000-00" },
+          { role: "신부", name: "장은선", bank: "우리은행", number: "1002-158-813997" },
+          // { role: "신부 아버지", name: "김윤성", bank: "OO은행", number: "000-0000-0000-00" },
+          // { role: "신부 어머니", name: "조하영", bank: "OO은행", number: "000-0000-0000-00" },
         ] },
       ];
 
@@ -627,7 +638,9 @@
         { name: "지원", date: "2026.04.22 12:21", content: "하윤아 결혼 진심으로 축하해!\n웨딩스냅, 청첩장 모두 너무 예쁘다💚\n둘만의 아름다운 결혼식도 기대하고 있어\n남은 결혼식 준비도 잘 마무리하고!\n행복한 결혼생활 되기를 바래🫶" },
       ];
 
-      const GALLERY_COUNT = 18; // 이미지 없음 — 빈 칸으로 표시
+      // gallery-data.js(매니페스트)의 사진을 폴더 순서대로. 사진이 하나도 없으면 빈 칸 18개로 자리만 표시
+      const GALLERY_IMAGES = (window.GALLERY?.groups || []).flatMap((g) => g.images);
+      const GALLERY_COUNT = GALLERY_IMAGES.length || 18;
       const GALLERY_PAGE = 9;
 
       // ───────── 유틸 ─────────
@@ -812,17 +825,38 @@
 
       let galleryShown = GALLERY_PAGE;
       function renderGallery() {
-        $("#gallery").innerHTML = Array.from({ length: Math.min(galleryShown, GALLERY_COUNT) }, (_, i) =>
-          `<button class="img-ph aspect-square" data-idx="${i}" aria-label="사진 ${i + 1}"></button>`).join("");
-        $("#gallery-more").style.display = galleryShown >= GALLERY_COUNT ? "none" : "";
+        $("#gallery").innerHTML = Array.from({ length: Math.min(galleryShown, GALLERY_COUNT) }, (_, i) => {
+          const src = GALLERY_IMAGES[i];
+          const img = src ? `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" class="w-full h-full object-cover" />` : "";
+          return `<button class="img-ph aspect-square overflow-hidden" data-idx="${i}" aria-label="사진 ${i + 1}">${img}</button>`;
+        }).join("");
+        // 한 페이지 분량 이하면 버튼 숨김, 전부 펼치면 '접기' 버튼으로 바뀜
+        $("#gallery-more").style.display = GALLERY_COUNT <= GALLERY_PAGE ? "none" : "";
+        const all = galleryShown >= GALLERY_COUNT;
+        $("#gallery-more span").textContent = all ? "접기" : "더보기";
+        $("#gallery-more svg").style.transform = all ? "rotate(180deg)" : "";
       }
 
       // ───────── 인터랙션 ─────────
       function openModal(id) {
-        $("#" + id).classList.add("open");
+        const el = $("#" + id);
+        el.classList.remove("closing");
+        el.classList.add("open");
         document.body.style.overflow = "hidden";
       }
       function closeModal(el) {
+        // 전체 화면 사진은 페이드아웃이 끝난 뒤에 숨김 (모션 줄이기 설정이면 바로)
+        if (el.id === "lightbox" && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          if (el.classList.contains("closing")) return;
+          el.classList.add("closing");
+          el.addEventListener("animationend", function done(e) {
+            if (e.target !== el) return; // 안쪽 사진의 페이드인 이벤트는 무시
+            el.removeEventListener("animationend", done);
+            if (el.classList.contains("closing")) el.classList.remove("open", "closing");
+          });
+          document.body.style.overflow = "";
+          return;
+        }
         el.classList.remove("open");
         document.body.style.overflow = "";
       }
@@ -830,7 +864,13 @@
       let lbIndex = 0;
       function showLightbox(i) {
         lbIndex = (i + GALLERY_COUNT) % GALLERY_COUNT;
-        $("#lb-img").textContent = `사진 ${lbIndex + 1}`;
+        const box = $("#lb-img");
+        const src = GALLERY_IMAGES[lbIndex];
+        // 실제 사진이면 원본 비율 그대로(회색 자리 표시 없이), 없으면 빈 칸에 번호만
+        box.classList.toggle("img-ph", !src);
+        box.classList.toggle("aspect-[2/3]", !src);
+        if (src) box.innerHTML = `<img src="${esc(src)}" alt="사진 ${lbIndex + 1}" class="w-full max-h-[85vh] object-contain" />`;
+        else box.textContent = `사진 ${lbIndex + 1}`;
         $("#lb-count").textContent = `${lbIndex + 1} / ${GALLERY_COUNT}`;
       }
 
@@ -860,10 +900,23 @@
         $("#lb-prev").onclick = () => showLightbox(lbIndex - 1);
         $("#lb-next").onclick = () => showLightbox(lbIndex + 1);
 
+        // 전체 화면에서 좌우 스와이프로 이전/다음 사진
+        let lbx = 0, lby = 0;
+        const lb = $("#lightbox");
+        lb.addEventListener("touchstart", (e) => { lbx = e.touches[0].clientX; lby = e.touches[0].clientY; }, { passive: true });
+        lb.addEventListener("touchend", (e) => {
+          const dx = lbx - e.changedTouches[0].clientX;
+          const dy = lby - e.changedTouches[0].clientY;
+          if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy)) showLightbox(lbIndex + (dx > 0 ? 1 : -1));
+        }, { passive: true });
+
         $("#gallery-more").onclick = () => {
-          galleryShown += GALLERY_PAGE;
+          const collapse = galleryShown >= GALLERY_COUNT;
+          galleryShown = collapse ? GALLERY_PAGE : galleryShown + GALLERY_PAGE;
           renderGallery();
           ScrollTrigger.refresh();
+          // 접으면 페이지가 짧아지므로 갤러리 섹션 맨 위로 돌아감
+          if (collapse) scrollTo({ top: $("#gallery").closest("section").getBoundingClientRect().top + scrollY, behavior: "smooth" });
         };
 
         $("#add-calendar").onclick = addToCalendar;
